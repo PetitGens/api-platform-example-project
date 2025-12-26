@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Entity\Author;
+use Symfony\Component\ObjectMapper\Attribute\Map;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
@@ -18,6 +19,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
     new Get(),
   ],
 )]
+#[Map(target: Author::class)]
 class AuthorResource
 {
   #[Groups('author')]
