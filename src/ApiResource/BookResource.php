@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Entity\Book;
+use App\State\SuperProcessor;
 use Symfony\Component\ObjectMapper\Attribute\Map;
 use Symfony\Component\Serializer\Attribute\Groups;
 
@@ -18,7 +19,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
   denormalizationContext: ['groups' => 'book:write'],
   operations: [
     new GetCollection(),
-    new Post(),
+    new Post(processor: SuperProcessor::class),
     new Get(),
   ],
 )]
