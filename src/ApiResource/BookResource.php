@@ -13,14 +13,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
   shortName: 'Book',
-  stateOptions: new Options(Book::class),
-  normalizationContext: ['groups' => ['book', 'author']],
-  denormalizationContext: ['groups' => 'book:write'],
-  operations: [
-    new GetCollection(),
-    new Post(),
-    new Get(),
-  ],
+    operations: [
+      new GetCollection(),
+      new Post(),
+      new Get(),
+    ],
+    normalizationContext: ['groups' => ['book', 'author']],
+    denormalizationContext: ['groups' => 'book:write'],
+    stateOptions: new Options(Book::class),
 )]
 #[Map(source: Book::class)]
 #[Map(target: Book::class)]

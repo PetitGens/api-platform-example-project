@@ -12,12 +12,12 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(
   shortName: 'Author',
-  stateOptions: new Options(Author::class),
-  normalizationContext: ['groups' => 'author'],
-  operations: [
-    new GetCollection(),
-    new Get(),
-  ],
+    operations: [
+      new GetCollection(),
+      new Get(),
+    ],
+    normalizationContext: ['groups' => 'author'],
+    stateOptions: new Options(Author::class),
 )]
 #[Map(target: Author::class)]
 class AuthorResource
