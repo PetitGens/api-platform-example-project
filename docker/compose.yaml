@@ -1,0 +1,71 @@
+name: ${COMPOSE_APPLICATION_NAME:-symfony-api-platform-sandbox}
+
+services:
+  nginx:
+    image: nginx:${NGINX_VERSION:-1.30.4}-alpine
+
+    ports:
+      - "${HTTP_PORT:-8000}:80"
+
+    volumes:
+      - "./conf/nginx:/etc/nginx/conf.d"
+      - "${BACKEND_DIR:-..}:/app"
+
+    networks:
+      - default
+
+    depends_on:
+      - php-fpm
+
+  php-fpm:
+    build:
+      context: ./build/backend
+      args:
+        - BASE_IMAGE=php:8.4-fpm-alpine
+        - INSTALL_XDEBUG=""
+
+    user: ${UID:-1000}:${GID:-1000}
+
+    volumes:
+      - "${BACKEND_DIR:-..}:/app"
+      - "./conf/php/xdebug.fpm.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro"
+
+    environment: &php-env
+      - APP_ENV=${APP_ENV:-dev}
+      #- DATABASE_URL=mysql://${DB_USER}:${DB_PASS}@db/${DB_BASENAME}
+      - JWT_PASSPHRASE=${JWT_PASSPHRASE:-change-me}
+      - XDEBUG_MODE=${XDEBUG_MODE:-off}
+      - XDEBUG_START_WITH_REQUEST=yes
+      - XDEBUG_DISCOVER_CLIENT_HOST=0
+      - XDEBUG_CLIENT_HOST=host.docker.internal
+
+    networks:
+      - default
+
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+  backend:
+    build:
+      context: ./build/backend
+      args:
+        - BASE_IMAGE=ghcr.io/devgine/composer-php:v2-php8.4-alpine
+
+    user: ${UID:-1000}:${GID:-1000}
+
+    volumes:
+      - "${BACKEND_DIR:-..}:/app"
+      - "./conf/php/xdebug.backend.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro"
+      - "./entrypoints/backend.sh:/entrypoint/boot.sh"
+
+    environment: *php-env
+
+    working_dir: /app
+
+    entrypoint: sh /entrypoint/boot.sh
+
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+volumes:
+  db_data:
