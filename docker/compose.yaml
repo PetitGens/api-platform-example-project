@@ -1,4 +1,4 @@
-name: ${COMPOSE_APPLICATION_NAME:-symfony-api-platform-sandbox}
+name: ${COMPOSE_APPLICATION_NAME:-api-platform-example}
 
 services:
   nginx:
